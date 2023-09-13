@@ -1,0 +1,23 @@
+name: Post merge Lighthouse check
+
+on: [pull_request]
+
+jobs:
+  Lighthouse:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Build Frontend
+        run: |
+          yarn
+      - name: Dump GitHub context
+        id: github_context_step
+        run: |
+          echo '${{ toJSON(github) }}' >> test.txt
+          echo 'test'
+          cat test.txt
+      

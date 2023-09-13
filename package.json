@@ -1,7 +1,9 @@
 {
-  "name": "$name$",
-  "version": "$version$",
+  "name": "sqlite-db",
+  "version": "1.0.0",
   "dependencies": {
-    $END$
+    "simple-git": "^3.19.1",
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
   }
 }
