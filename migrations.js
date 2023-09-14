@@ -1,3 +1,5 @@
+const sqlite3 = require("sqlite3").verbose();
+const DB_FILE = "metrics.db";
 
 // Function to create the SQLite database if it doesn't exist
 function createDatabase() {
@@ -16,12 +18,13 @@ function createDatabase() {
 function createRunsDataTable(db) {
     return new Promise((resolve, reject) => {
         const createTableSQL = `
-      CREATE TABLE IF NOT EXISTS runs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        task TEXT,
-        prNumber TEXT
-      );
-    `;
+  CREATE TABLE IF NOT EXISTS runs
+  (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    task   VARCHAR(50) NOT NULL,
+    prNumber   VARCHAR(50) NOT NULL,
+  );
+`;
 
         db.run(createTableSQL, (err) => {
             if (err) {
@@ -39,7 +42,8 @@ function createRunsDataTable(db) {
 function createTable(db, tableName) {
     return new Promise((resolve, reject) => {
         const createTableSQL = `
-      CREATE TABLE IF NOT EXISTS ${tableName} (
+      CREATE TABLE IF NOT EXISTS ${tableName} 
+      (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         task TEXT,
         prNumber TEXT,
@@ -51,7 +55,7 @@ function createTable(db, tableName) {
         interactive_expected TEXT,
         largest_contentful_paint TEXT,
         largest_contentful_paint_expected TEXT,
-        total_blocking_time TEXT
+        total_blocking_time TEXT,
         total_blocking_time_expected TEXT
       );
     `;

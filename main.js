@@ -1,14 +1,12 @@
 // main.js
 
 const simpleGit = require('simple-git');
-const sqlite3 = require("sqlite3").verbose();
 const {readJSONFile} = require('./fileReader');
+const {createRunsDataTable, createTable, createDatabase} = require('./migrations');
 const {groupBy} = require('./groupBy');
 const git = simpleGit(); // Assumes the current directory is your Git repository
-const DB_FILE = "metrics.db";
 
 
-// Function to insert a new row into the 'users' table
 function insertRow(db, tableName, data) {
     return new Promise((resolve, reject) => {
         const insertRowSQL = `
@@ -23,10 +21,21 @@ function insertRow(db, tableName, data) {
           interactive_expected, 
           largest_contentful_paint, 
           largest_contentful_paint_expected, 
-          total_blocking_time
+          total_blocking_time,
           total_blocking_time_expected
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?, 
+      ?,
+      ?
+      );
     `;
 
         db.run(insertRowSQL, [...data], (err) => {
@@ -35,6 +44,26 @@ function insertRow(db, tableName, data) {
                 return;
             }
             resolve();
+        });
+    });
+}
+
+function insertRun(db, data) {
+    return new Promise((resolve, reject) => {
+        const insertRowSQL = `
+      INSERT INTO runs (
+          task, 
+          prNumber, 
+            )
+      VALUES (?, ?);
+    `;
+
+        db.run(insertRowSQL, [...data], function (err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(this.lastChild);
         });
     });
 }
@@ -82,7 +111,8 @@ async function main() {
     console.time('step 2, read db and write');
     try {
         const db = await createDatabase();
-        createRunsDataTable(db);
+        // await createRunsDataTable(db);
+        // const runId = await insertRun(db, [])
         Object.entries(groupedByUrlResults).forEach(async ([url, data]) => {
             const tableName = project + '_' + tableNamesByUrl[new URL(url).pathname];
             const cls = data.find(measurments => measurments.auditId === 'cumulative-layout-shift');
