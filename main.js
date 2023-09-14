@@ -24,18 +24,7 @@ function insertRow(db, tableName, data) {
           total_blocking_time,
           total_blocking_time_expected
       )
-      VALUES (?, ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?, 
-      ?,
-      ?
-      );
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
         db.run(insertRowSQL, [...data], (err) => {
