@@ -86,7 +86,7 @@ function getProject(assertionResults) {
 function getTaskDetails() {
     const gitHubContext = readJSONFile('../gitHubContext.json');
     console.log(gitHubContext.event.head_commit);
-    const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC)-\d+/)[0];
+    const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC|BUG)-\d+/)[0];
     const prNumber = gitHubContext.event.head_commit.message.match(/#\d+/)[0].replace('#', '');
     return {
         prNumber,
