@@ -11,7 +11,7 @@ function insertRow(db, tableName, data) {
     return new Promise((resolve, reject) => {
         const insertRowSQL = `
       INSERT INTO ${tableName} (
-          task, 
+          task,
           prNumber, 
           cumulative_layout_shift,
           cumulative_layout_shift_expected,
@@ -22,9 +22,10 @@ function insertRow(db, tableName, data) {
           largest_contentful_paint, 
           largest_contentful_paint_expected, 
           total_blocking_time,
-          total_blocking_time_expected
+          total_blocking_time_expected,
+          runId
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
         db.run(insertRowSQL, [...data], (err) => {
@@ -42,8 +43,8 @@ function insertRun(db, data) {
         const insertRowSQL = `
       INSERT INTO runs (
           task, 
-          prNumber, 
-            )
+          prNumber
+      )
       VALUES (?, ?);
     `;
 
@@ -52,7 +53,7 @@ function insertRun(db, data) {
                 reject(err);
                 return;
             }
-            resolve(this.lastChild);
+            resolve(this.lastID);
         });
     });
 }
@@ -82,9 +83,21 @@ function getProject(assertionResults) {
     return project;
 }
 
+function getTaskDetails() {
+    const gitHubContext = readJSONFile('./gitHubContext.json');
+    console.log(gitHubContext.event.head_commit);
+    const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC)-\d+/)[0];
+    const prNumber = gitHubContext.event.head_commit.message.match(/#\d+/)[0].replace('#', '');
+    return {
+        prNumber,
+        task,
+    }
+}
+
 
 // Main function to run the application
 async function main() {
+    const taskDetails = getTaskDetails();
     let resultsFromLH;
     console.time('step 1, read results');
     try {
@@ -100,8 +113,8 @@ async function main() {
     console.time('step 2, read db and write');
     try {
         const db = await createDatabase();
-        // await createRunsDataTable(db);
-        // const runId = await insertRun(db, [])
+        await createRunsDataTable(db);
+        const runId = await insertRun(db, [taskDetails.task, taskDetails.prNumber]);
         Object.entries(groupedByUrlResults).forEach(async ([url, data]) => {
             const tableName = project + '_' + tableNamesByUrl[new URL(url).pathname];
             const cls = data.find(measurments => measurments.auditId === 'cumulative-layout-shift');
@@ -124,7 +137,8 @@ async function main() {
                     lcp.actual,
                     lcp.expected,
                     tbt.actual,
-                    tbt.expected
+                    tbt.expected,
+                    runId
                 ]);
         })
         db.close();

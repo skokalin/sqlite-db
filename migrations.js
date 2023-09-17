@@ -21,8 +21,8 @@ function createRunsDataTable(db) {
   CREATE TABLE IF NOT EXISTS runs
   (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    task   VARCHAR(50) NOT NULL,
-    prNumber   VARCHAR(50) NOT NULL,
+    task   VARCHAR(20) NOT NULL,
+    prNumber   VARCHAR(20) NOT NULL
   );
 `;
 
@@ -45,18 +45,19 @@ function createTable(db, tableName) {
       CREATE TABLE IF NOT EXISTS ${tableName} 
       (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        task TEXT,
-        prNumber TEXT,
-        cumulative_layout_shift TEXT,
-        cumulative_layout_shift_expected TEXT,
-        first_contentful_paint TEXT,
-        first_contentful_paint_expected TEXT,
-        interactive TEXT,
-        interactive_expected TEXT,
-        largest_contentful_paint TEXT,
-        largest_contentful_paint_expected TEXT,
-        total_blocking_time TEXT,
-        total_blocking_time_expected TEXT
+        task VARCHAR(20) NOT NULL,
+        prNumber VARCHAR(20) NOT NULL,
+        cumulative_layout_shift INTEGER,
+        cumulative_layout_shift_expected INTEGER,
+        first_contentful_paint INTEGER,
+        first_contentful_paint_expected INTEGER,
+        interactive INTEGER,
+        interactive_expected INTEGER,
+        largest_contentful_paint INTEGER,
+        largest_contentful_paint_expected INTEGER,
+        total_blocking_time INTEGER,
+        total_blocking_time_expected INTEGER,
+        runId INTEGER
       );
     `;
 
