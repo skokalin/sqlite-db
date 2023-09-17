@@ -84,7 +84,7 @@ function getProject(assertionResults) {
 }
 
 function getTaskDetails() {
-    const gitHubContext = readJSONFile('./gitHubContext.json');
+    const gitHubContext = readJSONFile('../gitHubContext.json');
     console.log(gitHubContext.event.head_commit);
     const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC)-\d+/)[0];
     const prNumber = gitHubContext.event.head_commit.message.match(/#\d+/)[0].replace('#', '');
@@ -102,7 +102,7 @@ async function main() {
     console.time('step 1, read results');
     try {
         // don't forget to change . to .. in the start of url
-        resultsFromLH = readJSONFile('./.lighthouseci/assertion-results.json')
+        resultsFromLH = readJSONFile('../.lighthouseci/assertion-results.json')
     } catch (e) {
         console.error("Error during the reading results:", e);
     }
