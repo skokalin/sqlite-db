@@ -143,6 +143,8 @@ async function main() {
         })
         db.close();
         console.timeEnd('step 2, read db and write');
+        git.addConfig('user.name', 'LHBot')
+            .addConfig('user.email', 'optimax@optimax.dev')
 
 
         git.add('metrics.db')
