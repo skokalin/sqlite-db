@@ -86,7 +86,7 @@ function getProject(assertionResults) {
 function getTaskDetails() {
     const gitHubContext = readJSONFile('../gitHubContext.json');
     console.log(gitHubContext.event.head_commit);
-    const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC|BUG)-\d+/)[0];
+    const task = gitHubContext.event.head_commit.message.match(/(GUSA|UVP|UHC|BUG|TA)-\d+/)[0];
     const prNumber = gitHubContext.event.head_commit.message.match(/#\d+/)[0].replace('#', '');
     return {
         prNumber,
@@ -126,8 +126,8 @@ async function main() {
             await insertRow(
                 db,
                 tableName, [
-                    'GUSA-0000',
-                    '0000',
+                    taskDetails.task,
+                    taskDetails.prNumber,
                     cls.actual,
                     cls.expected,
                     fcp.actual,
